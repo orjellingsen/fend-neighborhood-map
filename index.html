@@ -14,7 +14,8 @@
         <input class="search">
 
         <h2>Key Locations</h2>
-        <ul id="locationList">
+        <ul data-bind="foreach: placeNames" id="locationList">
+          <li data-bind="text: $data" class="place"></li>
         </ul>
       </div>
       <div id="map"></div>

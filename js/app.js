@@ -1,9 +1,10 @@
 var map;
 var markers = [];
-var placeMarkers = [];
 var infowindow;
 var apiKey = 'AIzaSyALQ9bUeeBwK9CarY--vC67M_2qx5I-lKM';
 
+
+var placeNames = ko.observableArray();
 
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), mapOptions);
@@ -21,7 +22,8 @@ function initMap() {
 function callback(results, status) {
   if(status === google.maps.places.PlacesServiceStatus.OK) {
     for (var i = 0; i < results.length; i++) {
-      createMarker(results[i]);
+      var marker = createMarker(results[i]);
+
     }
   }
   else {
@@ -33,11 +35,16 @@ function createMarker(place) {
   var placeLoc = place.geometry.location;
   var marker = new google.maps.Marker({
     map: map,
-    position: place.geometry.location
+    position: placeLoc
   });
+
+  placeNames.push(place.name);
 
   google.maps.event.addListener(marker, 'click', function() {
     infowindow.setContent(place.name);
     infowindow.open(map, this);
   });
 }
+console.log(placeNames);
+
+ko.applyBindings(placeNames);

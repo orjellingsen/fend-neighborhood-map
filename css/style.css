@@ -37,3 +37,19 @@ h1, h2 {
   text-align: center;
   font-weight: normal;
 }
+
+#locationList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+.place {
+  padding: 5px 50px;
+  border: 1px solid #444;
+  margin: 0;
+  width: 100%;
+}
+.place:hover {
+  background-color: #444;
+}
