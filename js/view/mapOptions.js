@@ -76,8 +76,10 @@ var styles = [
         "color": "#a2daf2"
     }]}];
 
+    var mapCenter = {lat: 60.39126279999999, lng: 5.3220544};
+
     var mapOptions = {
-      center: {lat: 60.39126279999999, lng: 5.3220544},
+      center: mapCenter,
       zoom: 15,
       minZoom: 11,
       maxZoom: 19,
