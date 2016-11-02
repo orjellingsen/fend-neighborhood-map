@@ -33,7 +33,7 @@ html, body {
 .search:focus {
   border-color: #fff;
 }
-h1 {
+h1, h2 {
   text-align: center;
   font-weight: normal;
 }
