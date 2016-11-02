@@ -1,5 +1,4 @@
 var map;
-var markers = [];
 var infowindow;
 var placeList = ko.observableArray();
 
@@ -19,7 +18,7 @@ function initMap() {
 function createMarkers(results, status) {
   if(status === google.maps.places.PlacesServiceStatus.OK) {
     for (var i = 0; i < results.length; i++) {
-      var marker = createMarker(results[i]);
+      var marker = addMarker(results[i]);
       console.log(results[i]);
       placeList.push(results[i]);
     }
@@ -28,7 +27,7 @@ function createMarkers(results, status) {
   }
 }
 
-function createMarker(place) {
+function addMarker(place) {
   var marker = new google.maps.Marker({
     map: map,
     position: place.geometry.location
@@ -41,7 +40,7 @@ function createMarker(place) {
 function openInfoWindow(place) {
   infowindow.setContent(place.name);
   infowindow.setPosition(place.geometry.location);
-  infowindow.open(map, createMarker(place));
+  infowindow.open(map, addMarker(place));
 }
 
 ko.applyBindings(placeList);
