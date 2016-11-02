@@ -21,7 +21,7 @@ html, body {
   text-align: left;
   width: 340px;
 }
-.search {
+#places-search {
   width: 100%;
   margin: 0;
   font-size: 28px;
@@ -38,7 +38,7 @@ h1, h2 {
   font-weight: normal;
 }
 
-#locationList {
+#placeList {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -52,4 +52,5 @@ h1, h2 {
 }
 .place:hover {
   background-color: #444;
+  cursor: default;
 }

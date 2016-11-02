@@ -76,6 +76,7 @@ var styles = [
         "color": "#a2daf2"
     }]}];
 
+    // Set map center to the city of Bergen, Norway
     var mapCenter = {lat: 60.39126279999999, lng: 5.3220544};
 
     var mapOptions = {
@@ -85,4 +86,10 @@ var styles = [
       maxZoom: 19,
       mapTypeControl: false,
       styles: styles
+    };
+
+    var nearbySearchOptions = {
+      location: mapCenter,
+      radius: 2500,
+      type: ['restaurant']
     };

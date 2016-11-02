@@ -10,18 +10,16 @@
   <body>
     <div class="container">
       <div id="sideBar">
-        <h1>Bergen - Map</h1>
-        <input class="search">
+        <input id="places-search">
 
-        <h2>Key Locations</h2>
-        <ul data-bind="foreach: placeNames" id="locationList">
-          <li data-bind="text: $data" class="place"></li>
+        <h2>Food in Bergen</h2>
+        <ul data-bind="foreach: placeList" id="placeList">
+          <li data-bind="text: name, click: openInfoWindow" class="place"></li>
         </ul>
       </div>
       <div id="map"></div>
     </div>
 
-    <script src="js/jquery-3.1.1.min.js"></script>
     <script src="js/knockout-3.4.0.js"></script>
     <script src="js/view/mapOptions.js"></script>
     <script src="js/app.js"></script>

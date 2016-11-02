@@ -1,50 +1,47 @@
 var map;
 var markers = [];
 var infowindow;
-var apiKey = 'AIzaSyALQ9bUeeBwK9CarY--vC67M_2qx5I-lKM';
-
-
-var placeNames = ko.observableArray();
+var placeList = ko.observableArray();
 
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), mapOptions);
-
-  infowindow = new google.maps.InfoWindow();
+  infowindow = new google.maps.InfoWindow({
+    pixelOffset: new google.maps.Size(0, -40)
+  });
 
   var nearbyPlaces = new google.maps.places.PlacesService(map);
-  nearbyPlaces.nearbySearch({
-    location: mapCenter,
-    radius: 2500,
-    type: ['restaurant']
-  }, callback);
+  nearbyPlaces.nearbySearch(nearbySearchOptions, createMarkers);
+
+  var searchBox = new google.maps.places.SearchBox(document.getElementById('places-search'));
+  searchBox.setBounds(map.getBounds());
 }
 
-function callback(results, status) {
+function createMarkers(results, status) {
   if(status === google.maps.places.PlacesServiceStatus.OK) {
     for (var i = 0; i < results.length; i++) {
       var marker = createMarker(results[i]);
-
+      console.log(results[i]);
+      placeList.push(results[i]);
     }
-  }
-  else {
-    console.log('PlacesService not OK');
+  } else {
+    console.log('Error: PlacesService not OK');
   }
 }
 
 function createMarker(place) {
-  var placeLoc = place.geometry.location;
   var marker = new google.maps.Marker({
     map: map,
-    position: placeLoc
+    position: place.geometry.location
   });
-
-  placeNames.push(place.name);
-
   google.maps.event.addListener(marker, 'click', function() {
-    infowindow.setContent(place.name);
-    infowindow.open(map, this);
+    openInfoWindow(place);
   });
 }
-console.log(placeNames);
 
-ko.applyBindings(placeNames);
+function openInfoWindow(place) {
+  infowindow.setContent(place.name);
+  infowindow.setPosition(place.geometry.location);
+  infowindow.open(map, createMarker(place));
+}
+
+ko.applyBindings(placeList);
