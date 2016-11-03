@@ -10,9 +10,9 @@
   <body>
     <div class="container">
       <div id="sideBar">
-        <input data-bind="value: query" id="places-search">
+        <input data-bind="value: placesFilter" id="placesFilter">
 
-        <h2>Food in Bergen</h2>
+        <h2 data-bind="text: placesFilter">Food in Bergen</h2>
         <ul data-bind="foreach: placeList" id="placeList">
           <li data-bind="text: name, click: openInfoWindow" class="place"></li>
         </ul>

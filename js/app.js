@@ -1,8 +1,9 @@
 function AppViewModel() {
   var map;
   var infowindow;
+  var markers = [];
   this.placeList = ko.observableArray();
-  this.query = ko.observable();
+  this.placesFilter = ko.observable();
 
   // Initialize the map
   this.initMap = function() {
@@ -14,18 +15,26 @@ function AppViewModel() {
     createPlaceList();
   }
 
-  // Create a places list
+  this.placesFilter.subscribe(function(value) {
+    removeMarkers();
+    placeList([]);
+    createPlaceList();
+  });
+
   this.createPlaceList = function() {
+    console.log('createPlaceList function called');
     var nearbyPlaces = new google.maps.places.PlacesService(map);
     nearbyPlaces.nearbySearch({
       location: mapCenter,
       radius: 2500,
-      type: ['restaurant']
+      type: ['restaurant'],
+      keyword: this.placesFilter()
     }, createMarkers);
   }
 
   // Create a list of markers based on results from nearbySearch
   this.createMarkers = function(results, status) {
+    //TODO remake this function to push marks into array, and find a way to have KO still display marker list
     if(status === google.maps.places.PlacesServiceStatus.OK) {
       for (var i = 0; i < results.length; i++) {
         var marker = addMarker(results[i]);
@@ -35,6 +44,11 @@ function AppViewModel() {
     } else {
       console.log('Error: PlacesService not OK');
     }
+  }
+
+  this.removeMarkers = function() {
+    createMarkers(null);
+    //TODO link this function to new createmarkers
   }
 
   // Add a marker to the map and listen for clicks
