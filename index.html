@@ -12,9 +12,9 @@
       <div id="sideBar">
         <input data-bind="value: placesFilter" id="placesFilter">
 
-        <h2 data-bind="text: placesFilter">Food in Bergen</h2>
-        <ul data-bind="foreach: placeList" id="placeList">
-          <li data-bind="text: name, click: openInfoWindow" class="place"></li>
+        <h2>Food in Bergen</h2>
+        <ul data-bind="foreach: markers" id="placeList">
+          <li data-bind="text: title, click: openInfoWindow" class="place"></li>
         </ul>
       </div>
       <div id="map"></div>
