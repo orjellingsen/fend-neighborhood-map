@@ -10,17 +10,26 @@
   <body>
     <div class="container">
       <div id="sideBar">
+        <!-- Search for nearby restaurants -->
         <input data-bind="value: placesFilter" id="placesFilter">
 
-        <h2>Food in Bergen</h2>
+        <!-- Display the previous search. Hide when no search is done -->
+        <h2 class="filterText" data-bind="visible: placesFilter">Filter: <span data-bind="text: placesFilter"></span></h2>
+
+        <!-- Display error message if it exist -->
         <p data-bind="text: searchError" class="searchError"></p>
+
+        <!-- Loop through all markers and display as a list -->
         <ul data-bind="foreach: markers" id="placeList">
           <li data-bind="text: title, click: openInfoWindow" class="place"></li>
         </ul>
       </div>
+
+      <!-- This is where the map will be loaded! -->
       <div id="map"></div>
     </div>
 
+    <!-- Load all scripts -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script>
     <script src="js/mapOptions.js"></script>

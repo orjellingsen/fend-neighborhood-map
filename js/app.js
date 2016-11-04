@@ -1,9 +1,9 @@
 function AppViewModel() {
-	var map;
-	var infowindow;
+	var map,
+			infowindow;
 	this.markers = ko.observableArray([]);
 	this.searchError = ko.observable('');
-	this.placesFilter = ko.observable('');
+	this.placesFilter = ko.observable();
 
 	// Initialize the map
 	this.initMap = function() {
@@ -15,6 +15,7 @@ function AppViewModel() {
 	// Get a list of places
 	this.getPlaces = function() {
 		var nearbyPlaces = new google.maps.places.PlacesService(map);
+		// NearbySearch will return prominent places of a type within a radius of the location. This can be filtered further by use of a keyword.
 		nearbyPlaces.nearbySearch({
 			location: mapCenter,
 			radius: 1500,
@@ -29,6 +30,8 @@ function AppViewModel() {
 	this.createMarkers = function(results, status) {
 		// Check to see if the call was successful
 		if(status === google.maps.places.PlacesServiceStatus.OK) {
+			// If search is successful, reset error message
+			searchError('');
 			// Loop trough all results and add a marker for each one. This is usually 20 times
 			for (var i = 0; i < results.length; i++) {
 				addMarker(results[i]);
@@ -56,18 +59,21 @@ function AppViewModel() {
 			infowindow.setContent(place.name);
 			infowindow.open(map, this);
 		});
+		// Push the marker into the markers array, which is used to show the list-view
 		markers.push(marker);
 	}
 
 	// Remove all markers from the marker array
 	this.removeMarkers = function() {
 		for (var i = 0; i < markers().length; i++ ) {
-		 markers()[i].setMap(null);
+			markers()[i].setMap(null);
 		}
 		markers([]);
 	}
 
 	// Use foursquare to return address, phone number and twitter for the selected place
+	// I have decided to use the foursquare search api in the beginning since it does not require oauth to use
+	// Planning to add oauth and Yelp API in a future version of this app
 	this.fourSquare = function(place_name) {
 		// This is the app ID and secret for the fourSquare API
 		var fsId = '11BVZSN2GVGWTEJCBWHZKWXW1VQZLM52VN1FBNXKMR4N4MH4';
@@ -75,7 +81,6 @@ function AppViewModel() {
 		// Encode the name to be used in url
 		place_name = encodeURIComponent(place_name);
 		// Create the url that will be used to request json for the place we want to look up
-		// I have decided to use the foursquare search api since it does not require oauth to use
 		var fourSquareUrl = 'https://api.foursquare.com/v2/venues/search?&client_id=' + fsId + '&client_secret=' + fsSecret +
 					'&v=20161104&ll=' + mapCenter.lat + ',' + mapCenter.lng + '&query='+ place_name + '&limit=1';
 		// Request JSON

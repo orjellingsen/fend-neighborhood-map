@@ -1,3 +1,5 @@
+// Setting map styles. These map styles are made by Mike Fowler
+// Source: https://snazzymaps.com/style/42/apple-maps-esque
 var styles = [
   {
     "featureType": "landscape.man_made",
@@ -79,6 +81,7 @@ var styles = [
     // Set map center to the city of Bergen, Norway
     var mapCenter = {lat: 60.39126279999999, lng: 5.3220544};
 
+    // Map options that are used when the map initialize
     var mapOptions = {
       center: mapCenter,
       zoom: 15,
@@ -86,10 +89,4 @@ var styles = [
       maxZoom: 19,
       mapTypeControl: false,
       styles: styles
-    };
-
-    var nearbySearchOptions = {
-      location: mapCenter,
-      radius: 2500,
-      type: ['restaurant']
     };
