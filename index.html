@@ -13,6 +13,7 @@
         <input data-bind="value: placesFilter" id="placesFilter">
 
         <h2>Food in Bergen</h2>
+        <p data-bind="text: searchError" class="searchError"></p>
         <ul data-bind="foreach: markers" id="placeList">
           <li data-bind="text: title, click: openInfoWindow" class="place"></li>
         </ul>

@@ -37,7 +37,10 @@ h1, h2 {
   text-align: center;
   font-weight: normal;
 }
-
+.searchError {
+  text-align: center;
+  padding-left: 10px;
+}
 #placeList {
   list-style: none;
   margin: 0;

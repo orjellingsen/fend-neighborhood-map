@@ -2,6 +2,7 @@ function AppViewModel() {
 	var map;
 	var infowindow;
 	this.markers = ko.observableArray([]);
+	this.searchError = ko.observable('');
 	this.placesFilter = ko.observable('');
 
 	// Initialize the map
@@ -18,22 +19,24 @@ function AppViewModel() {
 			location: mapCenter,
 			radius: 1500,
 			types: ['restaurant'],
+			// Keyword will be empty when the site is first loaded, so the map will show the most prominent restaurants in the area on first load.
+			// If a keyword is entered into the searchfield, this.placesFilter() will filter the search.
 			keyword: this.placesFilter()
 		}, createMarkers);
 	}
 
 	// Create a list of markers based on results from nearbySearch
 	this.createMarkers = function(results, status) {
+		// Check to see if the call was successful
 		if(status === google.maps.places.PlacesServiceStatus.OK) {
-			var bounds = new google.maps.LatLngBounds();
+			// Loop trough all results and add a marker for each one. This is usually 20 times
 			for (var i = 0; i < results.length; i++) {
-				var marker = addMarker(results[i]);
-			/*	bounds.extend(new google.maps.LatLng(
-					results[i].geometry.location.lat(),
-					results[i].geometry.location.lng()));*/
+				addMarker(results[i]);
 			}
 		} else {
-			console.log('Error: PlacesService not OK');
+			// If google places can not return any results (offline, no query result), show error messages.
+			console.log('Error: google.maps.PlacesServiceStatus not OK');
+			searchError('We were not able to find any results. Please try again.');
 		}
 	}
 
@@ -46,6 +49,8 @@ function AppViewModel() {
 			place_id: place.place_id,
 			animation: google.maps.Animation.DROP
 		});
+		// Listen for a click on the marker. This is one of two click listeners in the app.
+		// There is a seperate listener for the items in the list-view, found at openInfoWindow()
 		google.maps.event.addListener(marker, 'click', function() {
 			fourSquare(place.name);
 			infowindow.setContent(place.name);
@@ -56,7 +61,6 @@ function AppViewModel() {
 
 	// Remove all markers from the marker array
 	this.removeMarkers = function() {
-		console.log(markers().length);
 		for (var i = 0; i < markers().length; i++ ) {
 		 markers()[i].setMap(null);
 		}
@@ -65,18 +69,20 @@ function AppViewModel() {
 
 	// Use foursquare to return address, phone number and twitter for the selected place
 	this.fourSquare = function(place_name) {
-		var appId = '11BVZSN2GVGWTEJCBWHZKWXW1VQZLM52VN1FBNXKMR4N4MH4';
-		var appSecret = 'JJQRHIJYZ1OIJRBEICOFIJWDGYRCUHEECDCA4EINNZWS5S32';
-
+		// This is the app ID and secret for the fourSquare API
+		var fsId = '11BVZSN2GVGWTEJCBWHZKWXW1VQZLM52VN1FBNXKMR4N4MH4';
+		var fsSecret = 'JJQRHIJYZ1OIJRBEICOFIJWDGYRCUHEECDCA4EINNZWS5S32';
+		// Encode the name to be used in url
 		place_name = encodeURIComponent(place_name);
-		var fourSquareUrl = 'https://api.foursquare.com/v2/venues/search?&client_id=' + appId + '&client_secret=' + appSecret +
+		// Create the url that will be used to request json for the place we want to look up
+		// I have decided to use the foursquare search api since it does not require oauth to use
+		var fourSquareUrl = 'https://api.foursquare.com/v2/venues/search?&client_id=' + fsId + '&client_secret=' + fsSecret +
 					'&v=20161104&ll=' + mapCenter.lat + ',' + mapCenter.lng + '&query='+ place_name + '&limit=1';
-		console.log(fourSquareUrl);
+		// Request JSON
 		$.ajax({
 			url: fourSquareUrl
 		}).done(function(data) {
 			var response = data.response.venues[0];
-			
 			var address = response.location.address;
 			var phone = response.contact.formattedPhone;
 			var twitter = response.contact.twitter;
@@ -84,15 +90,18 @@ function AppViewModel() {
 		});
 	}
 
-
 	// Open infowindow
 	this.openInfoWindow = function(place) {
+		// Call function to request information from foursquare
 		fourSquare(place.title);
 		infowindow.setContent(place.title);
 		infowindow.open(map, this);
 	}
 
+	// This is a listener attatched to the placesFilter observable.
+	// The variable will change when enter is pressed in the search field, and this function will run.
 	this.placesFilter.subscribe(function(value) {
+		// Remove all markers and reset markers array before populating the map with new markers
 		removeMarkers();
 		getPlaces();
 	});
