@@ -47,11 +47,11 @@ function AppViewModel() {
       animation: google.maps.Animation.DROP
     });
     google.maps.event.addListener(marker, 'click', function() {
+      yelpApi(place.place_id);
       infowindow.setContent(place.name);
       infowindow.open(map, this);
     });
     markers.push(marker);
-    return marker;
   }
 
   // Remove all markers from the marker array
@@ -63,8 +63,18 @@ function AppViewModel() {
     markers([]);
   }
 
+  // Yelp API
+  this.yelpApi = function(place_id) {
+    var appId = '2kbmsbZK3GnsKlR3_vGpRw';
+    var appSecret = 'PPKN3Pzu5ivA7R6yHk08k6WiqhvgQhXGBMbDhtd9CaPSR0EiARuBHE5JB9oZP8G7';
+
+    var yelpUrl = 'https://api.yelp.com/v3/businesses/' + place_id;
+    console.log(yelpUrl);
+  }
+
   // Open infowindow
   this.openInfoWindow = function(place) {
+    yelpApi(place.place_id);
     infowindow.setContent(place.title);
     infowindow.open(map, this);
   }
