@@ -17,7 +17,7 @@ function AppViewModel() {
 		nearbyPlaces.nearbySearch({
 			location: mapCenter,
 			radius: 1500,
-			types: ['amusement_park', 'aquarium', 'movie_theater', 'museum', 'park', 'stadium', 'zoo'],
+			types: ['restaurant'],
 			keyword: this.placesFilter()
 		}, createMarkers);
 	}
@@ -63,6 +63,7 @@ function AppViewModel() {
 		markers([]);
 	}
 
+	// Use foursquare to return address, phone number and twitter for the selected place
 	this.fourSquare = function(place_name) {
 		var appId = '11BVZSN2GVGWTEJCBWHZKWXW1VQZLM52VN1FBNXKMR4N4MH4';
 		var appSecret = 'JJQRHIJYZ1OIJRBEICOFIJWDGYRCUHEECDCA4EINNZWS5S32';
@@ -74,9 +75,12 @@ function AppViewModel() {
 		$.ajax({
 			url: fourSquareUrl
 		}).done(function(data) {
-			var
-		}).error(function() {
+			var response = data.response.venues[0];
 			
+			var address = response.location.address;
+			var phone = response.contact.formattedPhone;
+			var twitter = response.contact.twitter;
+			var url = response.url
 		});
 	}
 
