@@ -1,88 +1,97 @@
 function AppViewModel() {
-  var map;
-  var infowindow;
-  this.markers = ko.observableArray([]);
-  this.placesFilter = ko.observable('');
+	var map;
+	var infowindow;
+	this.markers = ko.observableArray([]);
+	this.placesFilter = ko.observable('');
 
-  // Initialize the map
-  this.initMap = function() {
-    map = new google.maps.Map(document.getElementById('map'), mapOptions);
-    infowindow = new google.maps.InfoWindow();
-    getPlaces();
-  }
+	// Initialize the map
+	this.initMap = function() {
+		map = new google.maps.Map(document.getElementById('map'), mapOptions);
+		infowindow = new google.maps.InfoWindow();
+		getPlaces();
+	}
 
-  // Get a list of places
-  this.getPlaces = function() {
-    var nearbyPlaces = new google.maps.places.PlacesService(map);
-    nearbyPlaces.nearbySearch({
-      location: mapCenter,
-      radius: 2000,
-      types: ['restaurant', 'bar', 'cafe'],
-      keyword: this.placesFilter()
-    }, createMarkers);
-  }
+	// Get a list of places
+	this.getPlaces = function() {
+		var nearbyPlaces = new google.maps.places.PlacesService(map);
+		nearbyPlaces.nearbySearch({
+			location: mapCenter,
+			radius: 1500,
+			types: ['amusement_park', 'aquarium', 'movie_theater', 'museum', 'park', 'stadium', 'zoo'],
+			keyword: this.placesFilter()
+		}, createMarkers);
+	}
 
-  // Create a list of markers based on results from nearbySearch
-  this.createMarkers = function(results, status) {
-    if(status === google.maps.places.PlacesServiceStatus.OK) {
-      var bounds = new google.maps.LatLngBounds();
-      for (var i = 0; i < results.length; i++) {
-        var marker = addMarker(results[i]);
-      /*  bounds.extend(new google.maps.LatLng(
-          results[i].geometry.location.lat(),
-          results[i].geometry.location.lng()));*/
-      }
-    } else {
-      console.log('Error: PlacesService not OK');
-    }
-  }
+	// Create a list of markers based on results from nearbySearch
+	this.createMarkers = function(results, status) {
+		if(status === google.maps.places.PlacesServiceStatus.OK) {
+			var bounds = new google.maps.LatLngBounds();
+			for (var i = 0; i < results.length; i++) {
+				var marker = addMarker(results[i]);
+			/*	bounds.extend(new google.maps.LatLng(
+					results[i].geometry.location.lat(),
+					results[i].geometry.location.lng()));*/
+			}
+		} else {
+			console.log('Error: PlacesService not OK');
+		}
+	}
 
-  // Add a marker to the map and listen for clicks
-  this.addMarker = function(place) {
-    var marker = new google.maps.Marker({
-      map: map,
-      title: place.name,
-      position: place.geometry.location,
-      place_id: place.place_id,
-      animation: google.maps.Animation.DROP
-    });
-    google.maps.event.addListener(marker, 'click', function() {
-      yelpApi(place.place_id);
-      infowindow.setContent(place.name);
-      infowindow.open(map, this);
-    });
-    markers.push(marker);
-  }
+	// Add a marker to the map and listen for clicks
+	this.addMarker = function(place) {
+		var marker = new google.maps.Marker({
+			map: map,
+			title: place.name,
+			position: place.geometry.location,
+			place_id: place.place_id,
+			animation: google.maps.Animation.DROP
+		});
+		google.maps.event.addListener(marker, 'click', function() {
+			fourSquare(place.name);
+			infowindow.setContent(place.name);
+			infowindow.open(map, this);
+		});
+		markers.push(marker);
+	}
 
-  // Remove all markers from the marker array
-  this.removeMarkers = function() {
-    console.log(markers().length);
-    for (var i = 0; i < markers().length; i++ ) {
-     markers()[i].setMap(null);
-    }
-    markers([]);
-  }
+	// Remove all markers from the marker array
+	this.removeMarkers = function() {
+		console.log(markers().length);
+		for (var i = 0; i < markers().length; i++ ) {
+		 markers()[i].setMap(null);
+		}
+		markers([]);
+	}
 
-  // Yelp API
-  this.yelpApi = function(place_id) {
-    var appId = '2kbmsbZK3GnsKlR3_vGpRw';
-    var appSecret = 'PPKN3Pzu5ivA7R6yHk08k6WiqhvgQhXGBMbDhtd9CaPSR0EiARuBHE5JB9oZP8G7';
+	this.fourSquare = function(place_name) {
+		var appId = '11BVZSN2GVGWTEJCBWHZKWXW1VQZLM52VN1FBNXKMR4N4MH4';
+		var appSecret = 'JJQRHIJYZ1OIJRBEICOFIJWDGYRCUHEECDCA4EINNZWS5S32';
 
-    var yelpUrl = 'https://api.yelp.com/v3/businesses/' + place_id;
-    console.log(yelpUrl);
-  }
+		place_name = encodeURIComponent(place_name);
+		var fourSquareUrl = 'https://api.foursquare.com/v2/venues/search?&client_id=' + appId + '&client_secret=' + appSecret +
+					'&v=20161104&ll=' + mapCenter.lat + ',' + mapCenter.lng + '&query='+ place_name + '&limit=1';
+		console.log(fourSquareUrl);
+		$.ajax({
+			url: fourSquareUrl
+		}).done(function(data) {
+			var
+		}).error(function() {
+			
+		});
+	}
 
-  // Open infowindow
-  this.openInfoWindow = function(place) {
-    yelpApi(place.place_id);
-    infowindow.setContent(place.title);
-    infowindow.open(map, this);
-  }
 
-  this.placesFilter.subscribe(function(value) {
-    removeMarkers();
-    getPlaces();
-  });
+	// Open infowindow
+	this.openInfoWindow = function(place) {
+		fourSquare(place.title);
+		infowindow.setContent(place.title);
+		infowindow.open(map, this);
+	}
+
+	this.placesFilter.subscribe(function(value) {
+		removeMarkers();
+		getPlaces();
+	});
 }
 
 // Apply knockout bindings
