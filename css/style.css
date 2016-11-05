@@ -57,3 +57,6 @@ h1, h2 {
   background-color: #444;
   cursor: default;
 }
+.infoWindow {
+  color: #000;
+}

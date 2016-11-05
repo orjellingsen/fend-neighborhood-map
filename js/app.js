@@ -1,10 +1,12 @@
 function AppViewModel() {
 	var map,
 			infowindow;
+			var fs = [];
 	this.markers = ko.observableArray([]);
 	this.searchError = ko.observable('');
 	this.placesFilter = ko.observable();
 
+		var fourSquareContent;
 	// Initialize the map
 	this.initMap = function() {
 		map = new google.maps.Map(document.getElementById('map'), mapOptions);
@@ -48,16 +50,14 @@ function AppViewModel() {
 		var marker = new google.maps.Marker({
 			map: map,
 			title: place.name,
+			name: place.name,
 			position: place.geometry.location,
 			place_id: place.place_id,
 			animation: google.maps.Animation.DROP
 		});
-		// Listen for a click on the marker. This is one of two click listeners in the app.
-		// There is a seperate listener for the items in the list-view, found at openInfoWindow()
-		google.maps.event.addListener(marker, 'click', function() {
-			fourSquare(place.name);
-			infowindow.setContent(place.name);
-			infowindow.open(map, this);
+		// Listen for a click on the marker and open info window
+		marker.addListener('click', function() {
+			openInfoWindow(marker);
 		});
 		// Push the marker into the markers array, which is used to show the list-view
 		markers.push(marker);
@@ -79,28 +79,34 @@ function AppViewModel() {
 		var fsId = '11BVZSN2GVGWTEJCBWHZKWXW1VQZLM52VN1FBNXKMR4N4MH4';
 		var fsSecret = 'JJQRHIJYZ1OIJRBEICOFIJWDGYRCUHEECDCA4EINNZWS5S32';
 		// Encode the name to be used in url
-		place_name = encodeURIComponent(place_name);
+		var url_place_name = encodeURIComponent(place_name);
 		// Create the url that will be used to request json for the place we want to look up
+		// TODO: is v= correct?
 		var fourSquareUrl = 'https://api.foursquare.com/v2/venues/search?&client_id=' + fsId + '&client_secret=' + fsSecret +
-					'&v=20161104&ll=' + mapCenter.lat + ',' + mapCenter.lng + '&query='+ place_name + '&limit=1';
+					'&v=20161104&ll=' + mapCenter.lat + ',' + mapCenter.lng + '&query='+ url_place_name + '&limit=1';
 		// Request JSON
 		$.ajax({
 			url: fourSquareUrl
 		}).done(function(data) {
 			var response = data.response.venues[0];
-			var address = response.location.address;
-			var phone = response.contact.formattedPhone;
-			var twitter = response.contact.twitter;
-			var url = response.url
+			fs.address = response.location.address;
+			fs.phone = response.contact.formattedPhone;
+			fs.twitter = response.contact.twitter;
+			fs.url = response.url
+			return fs;
+		// Call this function if the request fails
+		}).fail(function() {
+			console.log('fail');
 		});
 	}
 
 	// Open infowindow
+	// TODO: fix bug that have me clicking twice before correct window show up
 	this.openInfoWindow = function(place) {
 		// Call function to request information from foursquare
-		fourSquare(place.title);
-		infowindow.setContent(place.title);
-		infowindow.open(map, this);
+		fourSquare(place.name);
+		infowindow.setContent(fs.address);
+		infowindow.open(map, place);
 	}
 
 	// This is a listener attatched to the placesFilter observable.
