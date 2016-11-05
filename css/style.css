@@ -6,20 +6,34 @@ html, body {
   color: #ccc;
   font-family: Verdana, sans-serif;
 }
+#wrapper {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+#header {
+  height: 10%;
+  margin: 0;
+}
 #map {
   bottom: 0px;
-  height: 100%;
-  left: 362px;
+  height: 80%;
+/*  left: 362px;
   position: absolute;
-  right: 0px;
+  right: 0px;*/
 }
-#sideBar {
+#sidebar {
   background: #333;
   height: 100%;
   line-height: 35px;
   padding: 10px 0 30px 0;
-  text-align: left;
-  width: 340px;
+}
+#footer {
+  text-align: center;
+}
+#footer a {
+  color: #ccc;
+  text-decoration: underline;
 }
 #placesFilter {
   width: 100%;

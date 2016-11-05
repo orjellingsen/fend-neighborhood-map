@@ -1,12 +1,10 @@
 function AppViewModel() {
 	var map,
-			infowindow,
-			fsInfo = '';
+		infowindow,
+		fsInfo = '';
 	this.markers = ko.observableArray([]);
 	this.searchError = ko.observable('');
 	this.placesFilter = ko.observable();
-
-		var fourSquareContent;
 	// Initialize the map
 	this.initMap = function() {
 		map = new google.maps.Map(document.getElementById('map'), mapOptions);
@@ -65,7 +63,6 @@ function AppViewModel() {
 			rating: place.rating,
 			animation: google.maps.Animation.DROP
 		});
-		console.log(place);
 		// Listen for a click on the marker and open info window
 		marker.addListener('click', function() {
 			markerAnimation(marker);
@@ -119,6 +116,7 @@ function AppViewModel() {
 			fsInfo = '<h3>FourSquare Information:</h3>';
 			// This is a counter that will increase every time information is added from foursquare
 			var infoAdded = 0;
+			// Only add information if it can be found
 			if (address) {
 				fsInfo += '<p>Address: ' + address + '</p>';
 				// Increase the counter when something is added
@@ -168,7 +166,7 @@ function AppViewModel() {
 				contentString += '</div><p>Rating: ' + place.rating + '</div>';
 			infowindow.setContent(contentString);
 			infowindow.open(map, place);
-		 }, 300);
+		}, 300);
 	}
 	// This is a listener attatched to the placesFilter observable.
 	// The variable will change when enter is pressed in the search field, and this function will run.

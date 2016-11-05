@@ -8,8 +8,20 @@
     <link rel="stylesheet" href="css/style.css">
   </head>
   <body>
-    <div class="container">
-      <div id="sideBar">
+    <!-- This is where the map will be loaded! -->
+    <div id="wrapper">
+      <header id="header">
+        <p><button id="button">Filter search</button></p>
+        <h1>Restaurant Map - Bergen</h1>
+      </header>
+      <div id="map"></div>
+      <footer id="footer">
+        <p>This is a project made for Udacity FEND. <a href="https://github.com/orjellingsen/fend-neighborhood-map">View Project on GitHub</a><p>
+      </footer>
+    </div>
+
+    <div id="sidebar">
+        <button class="close-sidebar" href="#">Close</button>
         <!-- Search for nearby restaurants -->
         <input data-bind="value: placesFilter" id="placesFilter">
 
@@ -25,9 +37,7 @@
         </ul>
       </div>
 
-      <!-- This is where the map will be loaded! -->
-      <div id="map"></div>
-    </div>
+
 
     <!-- Load all scripts -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -35,5 +45,7 @@
     <script src="js/mapOptions.js"></script>
     <script src="js/app.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyALQ9bUeeBwK9CarY--vC67M_2qx5I-lKM&callback=initMap" async defer></script>
+    <script src="js/jquery.simple-sidebar.min.js"></script>
+    <script src="js/sidebarOptions.js"></script>
   </body>
 </html>
