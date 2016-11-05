@@ -1,7 +1,7 @@
 function AppViewModel() {
 	var map,
 			infowindow;
-			var fs = [];
+						var fs = [];
 	this.markers = ko.observableArray([]);
 	this.searchError = ko.observable('');
 	this.placesFilter = ko.observable();
@@ -89,10 +89,11 @@ function AppViewModel() {
 			url: fourSquareUrl
 		}).done(function(data) {
 			var response = data.response.venues[0];
+
 			fs.address = response.location.address;
 			fs.phone = response.contact.formattedPhone;
 			fs.twitter = response.contact.twitter;
-			fs.url = response.url
+			fs.url = response.url;
 			return fs;
 		// Call this function if the request fails
 		}).fail(function() {
@@ -101,11 +102,15 @@ function AppViewModel() {
 	}
 
 	// Open infowindow
-	// TODO: fix bug that have me clicking twice before correct window show up
 	this.openInfoWindow = function(place) {
 		// Call function to request information from foursquare
-		fourSquare(place.name);
-		infowindow.setContent(fs.address);
+		setTimeout(function() {
+			fourSquare(place.name);
+		}, 300);
+		var content = '<div class="infoWindow">' + '<h2>' + place.name + '</h2>' +
+			'<p>Address: ' + fs.address + '</p>' +
+			'</div>';
+		infowindow.setContent(content);
 		infowindow.open(map, place);
 	}
 
