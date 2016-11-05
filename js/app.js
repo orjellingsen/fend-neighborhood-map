@@ -1,7 +1,7 @@
 function AppViewModel() {
 	var map,
 			infowindow;
-						var fs = [];
+			var fsInfo = '';
 	this.markers = ko.observableArray([]);
 	this.searchError = ko.observable('');
 	this.placesFilter = ko.observable();
@@ -57,10 +57,19 @@ function AppViewModel() {
 		});
 		// Listen for a click on the marker and open info window
 		marker.addListener('click', function() {
+			markerAnimation(marker);
 			openInfoWindow(marker);
+
 		});
 		// Push the marker into the markers array, which is used to show the list-view
 		markers.push(marker);
+	}
+
+	// Animate the marker to bounce
+	this.markerAnimation = function(marker) {
+		marker.setAnimation(google.maps.Animation.BOUNCE);
+		// Timeout after 1400ms makes the bouncer stop animating after 2 bounces
+		setTimeout(function(){marker.setAnimation(null);}, 1400);
 	}
 
 	// Remove all markers from the marker array
@@ -74,7 +83,7 @@ function AppViewModel() {
 	// Use foursquare to return address, phone number and twitter for the selected place
 	// I have decided to use the foursquare search api in the beginning since it does not require oauth to use
 	// Planning to add oauth and Yelp API in a future version of this app
-	this.fourSquare = function(place_name) {
+	this.fourSquareInfo = function(place_name) {
 		// This is the app ID and secret for the fourSquare API
 		var fsId = '11BVZSN2GVGWTEJCBWHZKWXW1VQZLM52VN1FBNXKMR4N4MH4';
 		var fsSecret = 'JJQRHIJYZ1OIJRBEICOFIJWDGYRCUHEECDCA4EINNZWS5S32';
@@ -90,30 +99,56 @@ function AppViewModel() {
 		}).done(function(data) {
 			var response = data.response.venues[0];
 
-			fs.address = response.location.address;
-			fs.phone = response.contact.formattedPhone;
-			fs.twitter = response.contact.twitter;
-			fs.url = response.url;
-			return fs;
+			var address = response.location.address;
+			var phone = response.contact.formattedPhone;
+			var twitter = response.contact.twitter;
+			var url = response.url;
+
+
+			fsInfo = '<h3>FourSquare Information:</h3>';
+			// This is a counter that will increase every time information is added from foursquare
+			var infoAdded = 0;
+			if (address) {
+				fsInfo += '<p>Address: ' + address + '</p>';
+				// Increase the counter when something is added
+				infoAdded++;
+			} if (phone) {
+				fsInfo += '<p>Phone: ' + phone + '</p>';
+				infoAdded++;
+			} if (twitter) {
+				fsInfo += '<p>Twitter: @' + twitter + '</p>';
+				infoAdded++;
+			} if (url) {
+				fsInfo += '<p><a href="' + url + '">Website</a></p>';
+				infoAdded++;
+			}
+			// If no information about the place was found on foursquare, set this message to display instead
+			if(infoAdded === 0) {
+				fsInfo = '<p>Nothing to display from FourSquare</p>';
+			}
 		// Call this function if the request fails
 		}).fail(function() {
-			console.log('fail');
+			// Display this message if there was an error loading the information
+			fsInfo = '<p>Could not Load fourSquare Information.</p>';
 		});
+		return fsInfo;
 	}
 
 	// Open infowindow
 	this.openInfoWindow = function(place) {
 		// Call function to request information from foursquare
-		setTimeout(function() {
-			fourSquare(place.name);
-		}, 300);
-		var content = '<div class="infoWindow">' + '<h2>' + place.name + '</h2>' +
-			'<p>Address: ' + fs.address + '</p>' +
-			'</div>';
-		infowindow.setContent(content);
-		infowindow.open(map, place);
+		fourSquareInfo(place.name);
+		markerAnimation(place);
+		infowindow.setContent('<div class="infoWindow"><h2>' + place.name + '</h2><p>Loading FourSquare Information...</p></div>');
+		infowindow.open(map,place);
+		 setTimeout(function() {
+			 var contentString = '<div class="infoWindow"><h2>' + place.name + '</h2><div class="fourSquareInfo">';
+			 		contentString += fsInfo;
+					contentString += '</div></div>';
+			 infowindow.setContent(contentString);
+			 infowindow.open(map, place);
+		 }, 300);
 	}
-
 	// This is a listener attatched to the placesFilter observable.
 	// The variable will change when enter is pressed in the search field, and this function will run.
 	this.placesFilter.subscribe(function(value) {

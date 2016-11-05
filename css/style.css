@@ -59,4 +59,17 @@ h1, h2 {
 }
 .infoWindow {
   color: #000;
+  text-align: left;
+}
+.infoWindow h2 {
+  text-align: left;
+}
+.infoWindow h3 {
+  text-align: left;
+  font-weight: normal;
+}
+.fourSquareInfo {
+  background-color: #eff5ff;
+  padding: 10px;
+  margin: 0;
 }
