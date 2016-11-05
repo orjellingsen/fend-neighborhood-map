@@ -1,9 +1,8 @@
 $(document).ready(function() {
   $('#sidebar').simpleSidebar({
-    opener: '#button',
+    opener: '#filter-button',
     wrapper: '#wrapper',
     close: '#wrapper',
-    mask: false,
     sidebar: {
       align: 'left', //or 'right' - This option can be ignored, the sidebar will automatically align to right.
       width: 350, //You can ignore this option, the sidebar will automatically size itself to 300px.
