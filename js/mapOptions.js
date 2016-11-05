@@ -78,6 +78,7 @@ var styles = [
         "color": "#a2daf2"
     }]}];
 
+    var gApiKey = 'AIzaSyALQ9bUeeBwK9CarY--vC67M_2qx5I-lKM';
     // Set map center to the city of Bergen, Norway
     var mapCenter = {lat: 60.39126279999999, lng: 5.3220544};
 

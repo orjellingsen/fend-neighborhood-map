@@ -1,7 +1,7 @@
 function AppViewModel() {
 	var map,
-			infowindow;
-			var fsInfo = '';
+			infowindow,
+			fsInfo = '';
 	this.markers = ko.observableArray([]);
 	this.searchError = ko.observable('');
 	this.placesFilter = ko.observable();
@@ -11,7 +11,15 @@ function AppViewModel() {
 	this.initMap = function() {
 		map = new google.maps.Map(document.getElementById('map'), mapOptions);
 		infowindow = new google.maps.InfoWindow();
+		// Populate the map with initial places
 		getPlaces();
+		// If the map have not loaded after 5 seconds, show error message
+		this.failLoad = function() {
+			if(!window.initMap) {
+				$('#map').html('<div>Failed to load google maps Please reload the page</div>');
+			}
+		}
+		window.setTimeout(failLoad, 5000);
 	}
 
 	// Get a list of places
@@ -51,15 +59,17 @@ function AppViewModel() {
 			map: map,
 			title: place.name,
 			name: place.name,
+			vicinity: place.vicinity,
 			position: place.geometry.location,
 			place_id: place.place_id,
+			rating: place.rating,
 			animation: google.maps.Animation.DROP
 		});
+		console.log(place);
 		// Listen for a click on the marker and open info window
 		marker.addListener('click', function() {
 			markerAnimation(marker);
 			openInfoWindow(marker);
-
 		});
 		// Push the marker into the markers array, which is used to show the list-view
 		markers.push(marker);
@@ -75,8 +85,10 @@ function AppViewModel() {
 	// Remove all markers from the marker array
 	this.removeMarkers = function() {
 		for (var i = 0; i < markers().length; i++ ) {
+			// Don't display markers on map
 			markers()[i].setMap(null);
 		}
+		// Reset array
 		markers([]);
 	}
 
@@ -98,13 +110,12 @@ function AppViewModel() {
 			url: fourSquareUrl
 		}).done(function(data) {
 			var response = data.response.venues[0];
-
 			var address = response.location.address;
 			var phone = response.contact.formattedPhone;
 			var twitter = response.contact.twitter;
 			var url = response.url;
 
-
+			// Start building the foursquare string
 			fsInfo = '<h3>FourSquare Information:</h3>';
 			// This is a counter that will increase every time information is added from foursquare
 			var infoAdded = 0;
@@ -138,15 +149,25 @@ function AppViewModel() {
 	this.openInfoWindow = function(place) {
 		// Call function to request information from foursquare
 		fourSquareInfo(place.name);
+		// Animate the marker on click
 		markerAnimation(place);
-		infowindow.setContent('<div class="infoWindow"><h2>' + place.name + '</h2><p>Loading FourSquare Information...</p></div>');
+		// The place name will always display in the infowindow
+		var placeName = '<div class="infoWindow"><h2>' + place.name + '</h2>';
+		// Create url for getting relevant image from google streetview and instert into string
+		var streetViewUrl = 'https://maps.googleapis.com/maps/api/streetview?size=200x200&location='
+			+ encodeURIComponent(place.vicinity) + '&key=' + gApiKey;
+		placeName += '<p><img src="' + streetViewUrl + '"></p>';
+		// This is the content that will display while waiting for foursquare information to load
+		infowindow.setContent(placeName + '<p>Loading FourSquare Information...</p></div>');
 		infowindow.open(map,place);
-		 setTimeout(function() {
-			 var contentString = '<div class="infoWindow"><h2>' + place.name + '</h2><div class="fourSquareInfo">';
-			 		contentString += fsInfo;
-					contentString += '</div></div>';
-			 infowindow.setContent(contentString);
-			 infowindow.open(map, place);
+		// Set timeout to wait for foursquare to get information
+		setTimeout(function() {
+			// Create the final string to display in the infowindow
+			var contentString = placeName + '<div class="fourSquareInfo">';
+				contentString += fsInfo;
+				contentString += '</div><p>Rating: ' + place.rating + '</div>';
+			infowindow.setContent(contentString);
+			infowindow.open(map, place);
 		 }, 300);
 	}
 	// This is a listener attatched to the placesFilter observable.

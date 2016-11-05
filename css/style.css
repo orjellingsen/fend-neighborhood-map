@@ -60,6 +60,8 @@ h1, h2 {
 .infoWindow {
   color: #000;
   text-align: left;
+  min-height: 350px;
+  max-width: 200px;
 }
 .infoWindow h2 {
   text-align: left;
