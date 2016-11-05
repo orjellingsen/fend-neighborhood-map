@@ -8,35 +8,27 @@
     <link rel="stylesheet" href="css/style.css">
   </head>
   <body>
-    <!-- This is where the map will be loaded! -->
+
+    <!-- Wrap around main content to seperate it from the sidebar -->
     <div id="wrapper">
-      <header id="header">
-        <p><button id="filter-button" class="sidebarButton">Filter search</button></p>
-        <h1>Restaurant Map - Bergen</h1>
-      </header>
+      <button id="filter-button" class="sidebarButton">Filter search</button>
+      <!-- This is where the map will be loaded! -->
       <div id="map"></div>
-      <footer id="footer">
-        <p>This is a project made for Udacity FEND. <a href="https://github.com/orjellingsen/fend-neighborhood-map">View Project on GitHub</a><p>
-      </footer>
     </div>
 
+    <!-- The sidebar is hidden by default, and appears when filter-button is clicked -->
     <div id="sidebar">
-        <!-- Search for nearby restaurants -->
-        <input data-bind="value: placesFilter" id="placesFilter">
-
-        <!-- Display the previous search. Hide when no search is done -->
-        <h2 class="filterText" data-bind="visible: placesFilter">Filter: <span data-bind="text: placesFilter"></span></h2>
-
-        <!-- Display error message if it exist -->
-        <p data-bind="text: searchError" class="searchError"></p>
-
-        <!-- Loop through all markers and display as a list -->
-        <ul data-bind="foreach: markers" id="placeList">
-          <li data-bind="text: title, click: openInfoWindow" class="place close-sidebar"></li>
-        </ul>
-      </div>
-
-
+      <!-- Search for nearby restaurants -->
+      <input data-bind="value: placesFilter" id="placesFilter">
+      <!-- Display the previous search. Hide when no search is done -->
+      <h2 class="filterText" data-bind="visible: placesFilter">Filter: <span data-bind="text: placesFilter"></span></h2>
+      <!-- Display error message if it exist -->
+      <p data-bind="text: searchError" class="searchError"></p>
+      <!-- Loop through all markers and display as a list -->
+      <ul data-bind="foreach: markers" id="placeList">
+        <li data-bind="text: title, click: openInfoWindow" class="place close-sidebar"></li>
+      </ul>
+    </div>
 
     <!-- Load all scripts -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
