@@ -35,6 +35,7 @@ html, body {
   height: 100%;
   line-height: 35px;
   padding: 10px 0 30px 0;
+  border-right: 1px solid #000;
 }
 .sidebarButton {
   width: 200px;
@@ -46,10 +47,11 @@ html, body {
   background-color: #333;
   border: 1px solid #ccc;
   position: absolute;
-  top: 20px;
+  top: 40px;
   left: 10px;
   z-index: 2;
 }
+
 #footer {
   text-align: center;
 }
@@ -60,9 +62,10 @@ html, body {
   color: #ccc;
   text-decoration: underline;
 }
-#placesFilter {
+.input {
   width: 100%;
   margin: 0;
+  margin-bottom: 15px;
   font-size: 28px;
   padding: 10px 10px;
   background-color: #ccc;

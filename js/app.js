@@ -4,7 +4,7 @@ function AppViewModel() {
 		fsInfo = '';
 	this.markers = ko.observableArray([]);
 	this.searchError = ko.observable('');
-	this.placesFilter = ko.observable();
+	this.placeSearch = ko.observable();
 	// Initialize the map
 	this.initMap = function() {
 		map = new google.maps.Map(document.getElementById('map'), mapOptions);
@@ -29,8 +29,8 @@ function AppViewModel() {
 			radius: 1500,
 			types: ['restaurant'],
 			// Keyword will be empty when the site is first loaded, so the map will show the most prominent restaurants in the area on first load.
-			// If a keyword is entered into the searchfield, this.placesFilter() will filter the search.
-			keyword: this.placesFilter()
+			// If a keyword is entered into the searchfield, this.placeSearch() will filter the search.
+			keyword: this.placeSearch()
 		}, createMarkers);
 	}
 
@@ -168,9 +168,9 @@ function AppViewModel() {
 			infowindow.open(map, place);
 		}, 300);
 	}
-	// This is a listener attatched to the placesFilter observable.
+	// This is a listener attatched to the placeSearch observable.
 	// The variable will change when enter is pressed in the search field, and this function will run.
-	this.placesFilter.subscribe(function(value) {
+	this.placeSearch.subscribe(function(value) {
 		// Remove all markers and reset markers array before populating the map with new markers
 		removeMarkers();
 		getPlaces();

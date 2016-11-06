@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Bergen - Map</title>
-    <meta name="viewport" content="initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta charset="utf-8">
+    <title>Bergen - Map</title>
 
     <link rel="stylesheet" href="css/style.css">
   </head>
@@ -11,7 +12,7 @@
 
     <!-- Wrap around main content to seperate it from the sidebar -->
     <div id="wrapper">
-      <button id="filter-button" class="sidebarButton">Filter search</button>
+      <button id="filter-button" class="sidebarButton">Search &amp; Filter</button>
       <!-- This is where the map will be loaded! -->
       <div id="map"></div>
     </div>
@@ -19,9 +20,13 @@
     <!-- The sidebar is hidden by default, and appears when filter-button is clicked -->
     <div id="sidebar">
       <!-- Search for nearby restaurants -->
-      <input data-bind="value: placesFilter" id="placesFilter">
-      <!-- Display the previous search. Hide when no search is done -->
-      <h2 class="filterText" data-bind="visible: placesFilter">Filter: <span data-bind="text: placesFilter"></span></h2>
+      <input data-bind="value: placeSearch" id="placeSearch" class="input">
+      <h2 class="filterText" data-bind="visible: placeSearch">Search: <span data-bind="text: placeSearch"></span></h2>
+
+      <!-- Filter current results -->
+      <input data-bind="value: placeFilter" id="placeFilter" class="input">
+      <h2 class="filterText" data-bind="visible: placeFilter">Filter: <span data-bind="text: placeFilter"></span></h2>
+
       <!-- Display error message if it exist -->
       <p data-bind="text: searchError" class="searchError"></p>
       <!-- Loop through all markers and display as a list -->
