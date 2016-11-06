@@ -11,13 +11,10 @@ function AppViewModel() {
 		infowindow = new google.maps.InfoWindow();
 		// Populate the map with initial places
 		getPlaces();
-		// If the map have not loaded after 5 seconds, show error message
-		this.failLoad = function() {
-			if(!window.initMap) {
-				$('#map').html('<div>Failed to load google maps Please reload the page</div>');
-			}
-		}
-		window.setTimeout(failLoad, 5000);
+	}
+
+	this.mapError = function() {
+		$('#map').html('<div class="map-error">Failed to load google maps. Please reload the page to try again</div>');
 	}
 
 	// Get a list of places
