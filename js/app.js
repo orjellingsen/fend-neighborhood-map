@@ -3,8 +3,10 @@ function AppViewModel() {
 		infowindow,
 		fsInfo = '';
 	this.markers = ko.observableArray([]);
+	this.visibleMarkers = ko.observableArray([]);
 	this.searchError = ko.observable('');
 	this.placeSearch = ko.observable();
+	this.placeFilter = ko.observable();
 	// Initialize the map
 	this.initMap = function() {
 		map = new google.maps.Map(document.getElementById('map'), mapOptions);
@@ -67,6 +69,8 @@ function AppViewModel() {
 			position: location,
 			place_id: id,
 			rating: rating,
+			visible: true,
+			listVisible: true,
 			animation: google.maps.Animation.DROP
 		});
 		// Listen for a click on the marker and open info window
@@ -173,9 +177,68 @@ function AppViewModel() {
 			fsInfo = '<p>Could not Load fourSquare Information.</p>';
 		});
 	}
+
+	// This function will filter trough all markers and display/hide them on the list/map
+	this.filterPlaces = function() {
+		console.log(markers());
+		var filter = placeFilter().toLowerCase();
+		var i = 0;
+		markers().forEach(function(marker) { //Looper 20 ganger
+			var name = marker.name.toLowerCase();
+			var index = markers().indexOf(markers()[i]);
+			if (name.indexOf(filter) != -1) {
+				marker.setVisible(true);
+			} else {
+				marker.setVisible(false);
+			}
+			i++;
+		});
+	}
+	this.isVisible = function(marker) {
+		console.log(marker);
+		if(marker.visible === true) {
+			return false;
+		}
+		else {
+			return false;
+		}
+	}
+
+/*
+	this.updateVisible = function(marker) {
+		//visibleMarkers.removeAll();
+		var length = markers().length;
+			if(marker.visible) {
+				console.log('marker is visible');
+				visibleMarkers().push(marker);
+			}
+
+	}
+/*
+	this.inArray = function(comparer) {
+		var length = visibleMarkers().length;
+    for(var i=0; i < length; i++) {
+        if(comparer(visibleMarkers()[i])) return true;
+    }
+    return false;
+};
+this.pushIfNotExist = function(element, comparer) {
+    if (!visibleMarkers().inArray(comparer)) {
+        visibleMarkers().push(element);
+    }
+};
+*/
+
+	// This listener will run the filter every time you type
+	this.placeFilter.subscribe(function(value) {
+		filterPlaces();
+	})
+
 	// This is a listener attatched to the placeSearch observable.
 	// The variable will change when enter is pressed in the search field, and this function will run.
 	this.placeSearch.subscribe(function(value) {
+		// Reset the filter before searching
+		placeFilter('');
 		// Remove all markers and reset markers array before populating the map with new markers
 		removeMarkers();
 		getPlaces();

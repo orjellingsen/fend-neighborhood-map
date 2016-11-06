@@ -20,12 +20,10 @@
     <!-- The sidebar is hidden by default, and appears when filter-button is clicked -->
     <aside id="sidebar">
       <!-- Search for nearby restaurants -->
-      <input data-bind="value: placeSearch" id="placeSearch" class="input">
-      <h2 class="filterText" data-bind="visible: placeSearch">Search: <span data-bind="text: placeSearch"></span></h2>
+      <input placeholder="Search.." type="search" data-bind="value: placeSearch" id="placeSearch" class="input">
 
       <!-- Filter current results -->
-      <input data-bind="value: placeFilter" id="placeFilter" class="input">
-      <h2 class="filterText" data-bind="visible: placeFilter">Filter: <span data-bind="text: placeFilter"></span></h2>
+      <input placeholder="Filter.." type="search" data-bind="value: placeFilter, valueUpdate: 'afterkeydown'" id="placeFilter" class="input">
 
       <!-- Display error message if it exist -->
       <p data-bind="text: searchError" class="searchError"></p>
