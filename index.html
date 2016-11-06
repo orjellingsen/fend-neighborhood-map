@@ -11,14 +11,14 @@
   <body>
 
     <!-- Wrap around main content to seperate it from the sidebar -->
-    <div id="wrapper">
+    <main id="wrapper">
       <button id="filter-button" class="sidebarButton">Search &amp; Filter</button>
       <!-- This is where the map will be loaded! -->
       <div id="map"></div>
-    </div>
+    </main>
 
     <!-- The sidebar is hidden by default, and appears when filter-button is clicked -->
-    <div id="sidebar">
+    <aside id="sidebar">
       <!-- Search for nearby restaurants -->
       <input data-bind="value: placeSearch" id="placeSearch" class="input">
       <h2 class="filterText" data-bind="visible: placeSearch">Search: <span data-bind="text: placeSearch"></span></h2>
@@ -33,7 +33,7 @@
       <ul data-bind="foreach: markers" id="placeList">
         <li data-bind="text: title, click: openInfoWindow" class="place close-sidebar"></li>
       </ul>
-    </div>
+    </aside>
 
     <!-- Load all scripts -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
