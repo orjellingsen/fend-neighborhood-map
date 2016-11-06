@@ -3,7 +3,6 @@ function AppViewModel() {
 		infowindow,
 		fsInfo = '';
 	this.markers = ko.observableArray([]);
-	this.visibleMarkers = ko.observableArray([]);
 	this.searchError = ko.observable('');
 	this.placeSearch = ko.observable();
 	this.placeFilter = ko.observable();
@@ -174,65 +173,28 @@ function AppViewModel() {
 		.fail(function() {
 			// Display this message if there was an error loading the information
 			fsInfo = '<p>Could not Load fourSquare Information.</p>';
+			infowindow.setContent(placeName + fsInfo);
+			infowindow.open(map, place);
 		});
 	}
 
-	// This function will filter trough all markers and display/hide them on the list/map
-	this.filterPlaces = function() {
-		console.log(markers());
-		var filter = placeFilter().toLowerCase();
-		var i = 0;
-		markers().forEach(function(marker) {
-			var name = marker.name.toLowerCase();
-			//var index = markers().indexOf(markers()[i]);
-			if (name.indexOf(filter) != -1) {
-				marker.setVisible(true);
-			} else {
-				marker.setVisible(false);
-			}
-			i++;
-		});
-	}
-	/*
-	this.isVisible = function(marker) {
-		console.log(marker);
-		if(marker.visible === true) {
-			return false;
+	this.filterPlaces = ko.computed(() => {
+		if (!this.placeFilter() || this.placeFilter().trim() === '') {
+			// No input found, return all locations
+			this.markers().forEach((place) => {
+				place.setVisible(true);
+			})
+			return this.markers();
+		} else {
+			// input found, match keyword to filter
+			return ko.utils.arrayFilter(this.markers(), (place) => {
+				let isMatch = place.name.toLowerCase().indexOf(this.placeFilter().toLowerCase()) !== -1;
+				// show or hide the marker
+				place.setVisible(isMatch);
+				return isMatch;
+			});
 		}
-		else {
-			return false;
-		}
-	}
-
-/*
-	this.updateVisible = function(marker) {
-		//visibleMarkers.removeAll();
-		var length = markers().length;
-			if(marker.visible) {
-				console.log('marker is visible');
-				visibleMarkers().push(marker);
-			}
-
-	}
-/*
-	this.inArray = function(comparer) {
-		var length = visibleMarkers().length;
-    for(var i=0; i < length; i++) {
-        if(comparer(visibleMarkers()[i])) return true;
-    }
-    return false;
-};
-this.pushIfNotExist = function(element, comparer) {
-    if (!visibleMarkers().inArray(comparer)) {
-        visibleMarkers().push(element);
-    }
-};
-*/
-
-	// This listener will run the filter every time you type
-	this.placeFilter.subscribe(function(value) {
-		filterPlaces();
-	})
+	});
 
 	// This is a listener attatched to the placeSearch observable.
 	// The variable will change when enter is pressed in the search field, and this function will run.

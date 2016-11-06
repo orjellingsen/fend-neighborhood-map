@@ -28,8 +28,8 @@
       <!-- Display error message if it exist -->
       <p data-bind="text: searchError" class="searchError"></p>
       <!-- Loop through all markers and display as a list -->
-      <ul data-bind="foreach: markers" id="placeList">
-        <li data-bind="text: title, click: openInfoWindow" class="place close-sidebar"></li>
+      <ul data-bind="foreach: filterPlaces" id="placeList">
+        <li data-bind="text: $data.title, click: openInfoWindow" class="place close-sidebar"></li>
       </ul>
     </aside>
 
