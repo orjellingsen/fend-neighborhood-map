@@ -69,10 +69,9 @@ function AppViewModel() {
 			position: location,
 			place_id: id,
 			rating: rating,
-			visible: true,
-			listVisible: true,
 			animation: google.maps.Animation.DROP
 		});
+
 		// Listen for a click on the marker and open info window
 		marker.addListener('click', function() {
 			markerAnimation(marker);
