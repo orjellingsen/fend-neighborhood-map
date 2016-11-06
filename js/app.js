@@ -13,7 +13,9 @@ function AppViewModel() {
 		getPlaces();
 	}
 
+	// If the map can not load, run this function to show an error
 	this.mapError = function() {
+		console.log('Error: Unable to laod map');
 		$('#map').html('<div class="map-error">Failed to load google maps. Please reload the page to try again</div>');
 	}
 
@@ -50,14 +52,21 @@ function AppViewModel() {
 
 	// Add a marker to the map and listen for clicks
 	this.addMarker = function(place) {
+		var rating, name, vicinity, location, id;
+		if(place.rating) {rating = place.rating} else {rating = 'Not available'};
+		if(place.name) {name = place.name} else {name = false};
+		if(place.vicinity) {vicinity = place.vicinity} else {vicinity = 'Bergen'};
+		if(place.geometry.location) {location = place.geometry.location} else {location = mapCenter};
+		if(place.place_id) {id = place.place_id} else {id = false};
+
 		var marker = new google.maps.Marker({
 			map: map,
-			title: place.name,
-			name: place.name,
-			vicinity: place.vicinity,
-			position: place.geometry.location,
-			place_id: place.place_id,
-			rating: place.rating,
+			title: name,
+			name: name,
+			vicinity: vicinity,
+			position: location,
+			place_id: id,
+			rating: rating,
 			animation: google.maps.Animation.DROP
 		});
 		// Listen for a click on the marker and open info window
@@ -121,46 +130,47 @@ function AppViewModel() {
 
 		// Call function to request information from foursquare
 		fourSquareInfo(place.name)
-			.done(function(data) {
-				var response = data.response.venues[0],
-						address = response.location.address,
-						phone = response.contact.formattedPhone,
-						twitter = response.contact.twitter,
-						url = response.url;
-				// Start building the foursquare string
-				fsInfo = '<h3>FourSquare Information:</h3>';
-				// This is a counter that will increase every time information is added from foursquare
-				var infoAdded = 0;
-				// Only add information if it can be found
-				if (address) {
-					fsInfo += '<p>Address: ' + address + '</p>';
-					// Increase the counter when something is added
-					infoAdded++;
-				} if (phone) {
-					fsInfo += '<p>Phone: ' + phone + '</p>';
-					infoAdded++;
-				} if (twitter) {
-					fsInfo += '<p>Twitter: @' + twitter + '</p>';
-					infoAdded++;
-				} if (url) {
-					fsInfo += '<p><a href="' + url + '">Website</a></p>';
-					infoAdded++;
-				}
-				// If no information about the place was found on foursquare, set this message to display instead
-				if(infoAdded === 0) {
-					fsInfo = '<p>Nothing to display from FourSquare</p>';
-				}
-				// Create the final string to display in the infowindow
-				var contentString = placeName + '<div class="fourSquareInfo">';
-					contentString += fsInfo;
-					contentString += '</div><p>Rating: ' + place.rating + '</div>';
-				infowindow.setContent(contentString);
-				infowindow.open(map, place);
-			// Call this function if the request fails
-			})
+		// Wait until the request is return before performing next steps
+		.done(function(data) {
+			var response = data.response.venues[0],
+					address = response.location.address,
+					phone = response.contact.formattedPhone,
+					twitter = response.contact.twitter,
+					url = response.url;
+			// Start building the foursquare string
+			fsInfo = '<h3>FourSquare Information:</h3>';
+			// This is a counter that will increase every time information is added from foursquare
+			var infoAdded = 0;
+			// Only add information if it can be found
+			if (address) {
+				fsInfo += '<p>Address: ' + address + '</p>';
+				// Increase the counter when something is added
+				infoAdded++;
+			} if (phone) {
+				fsInfo += '<p>Phone: ' + phone + '</p>';
+				infoAdded++;
+			} if (twitter) {
+				fsInfo += '<p>Twitter: @' + twitter + '</p>';
+				infoAdded++;
+			} if (url) {
+				fsInfo += '<p><a href="' + url + '">Website</a></p>';
+				infoAdded++;
+			}
+			// If no information about the place was found on foursquare, set this message to display instead
+			if(infoAdded === 0) {
+				fsInfo = '<p>Nothing to display from FourSquare</p>';
+			}
+			// Create the final string to display in the infowindow
+			var contentString = placeName + '<div class="fourSquareInfo">';
+				contentString += fsInfo;
+				contentString += '</div><p>Rating: ' + place.rating + '</div>';
+			infowindow.setContent(contentString);
+			infowindow.open(map, place);
+		// Call this function if the request fails
+		})
 		.fail(function() {
 			// Display this message if there was an error loading the information
-				fsInfo = '<p>Could not Load fourSquare Information.</p>';
+			fsInfo = '<p>Could not Load fourSquare Information.</p>';
 		});
 	}
 	// This is a listener attatched to the placeSearch observable.
