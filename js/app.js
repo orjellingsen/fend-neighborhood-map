@@ -178,18 +178,20 @@ function AppViewModel() {
 		});
 	}
 
+	// This function activates when placeFilter input is changed.
+	// It takes in the filter string, and toggle visibility of markers and list
 	this.filterPlaces = ko.computed(() => {
 		if (!this.placeFilter() || this.placeFilter().trim() === '') {
-			// No input found, return all locations
+			// If nothing is entered in the filter, show all places
 			this.markers().forEach((place) => {
 				place.setVisible(true);
 			})
 			return this.markers();
 		} else {
-			// input found, match keyword to filter
+			// If input is found, check if it is a match
 			return ko.utils.arrayFilter(this.markers(), (place) => {
 				let isMatch = place.name.toLowerCase().indexOf(this.placeFilter().toLowerCase()) !== -1;
-				// show or hide the marker
+				// Show or hide the place
 				place.setVisible(isMatch);
 				return isMatch;
 			});
