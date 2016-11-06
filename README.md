@@ -1,7 +1,9 @@
 #Neighborhood Map - Bergen
 This application display a map centered on the city of Bergen.
 The map will display the 20 most prominent restaurants in Bergen.
-Click the "filter search" button to open a list of all current places.
+Click the "Search & Filter" button to open a list of all current places.
+Enter a search query to search for other restaurants in this area, 
+or enter a filter to show only markers matching your filter
 
 Click on a marker or a place in the list to display more information about a place.
 

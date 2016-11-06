@@ -183,9 +183,9 @@ function AppViewModel() {
 		console.log(markers());
 		var filter = placeFilter().toLowerCase();
 		var i = 0;
-		markers().forEach(function(marker) { //Looper 20 ganger
+		markers().forEach(function(marker) {
 			var name = marker.name.toLowerCase();
-			var index = markers().indexOf(markers()[i]);
+			//var index = markers().indexOf(markers()[i]);
 			if (name.indexOf(filter) != -1) {
 				marker.setVisible(true);
 			} else {
@@ -194,6 +194,7 @@ function AppViewModel() {
 			i++;
 		});
 	}
+	/*
 	this.isVisible = function(marker) {
 		console.log(marker);
 		if(marker.visible === true) {
